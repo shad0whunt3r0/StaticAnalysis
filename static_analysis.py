@@ -43,13 +43,13 @@ class StaticAnalysis:
         return args_of_functions
     
     @staticmethod
-    def get_args_of_function(address, number_of_args):
+    def get_push_args(address, number_of_args):
         if number_of_args <= 0:
             return
-            
+
         args_f = [None] * number_of_args
         arg_counter = 0
-        
+
         for i in range(0,10):
             address = PrevHead(address, 0)
             if arg_counter == number_of_args:
