@@ -64,6 +64,30 @@ class StaticAnalysis:
         return args_f
 
     @staticmethod
+    def get_reg_args(caller_address, number_of_args):
+        args_reg = ['edi', 'esi', 'edx']
+        args = []
+
+        for reg_num in xrange(number_of_args):
+            reg = args_reg[reg_num]
+
+            address = caller_address
+            ins_counter = 10
+            while ins_counter != 0:
+                address = PrevHead(address, 0)
+                if GetMnem(address) == 'mov' and GetOpnd(address, 0) == reg:
+                    if GetOpType(address, 1) != idaapi.o_imm:
+                        return
+                    args.append(GetOperandValue(address, 1))
+                    break
+                ins_counter -= 1
+
+            if ins_counter == 0:
+                return None
+
+        return args
+
+    @staticmethod
     def get_flow_chart(address):
         start_func = GetFunctionAttr(address, FUNCATTR_START)
         return idaapi.FlowChart(idaapi.get_func(start_func))
